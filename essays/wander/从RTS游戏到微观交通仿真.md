@@ -38,14 +38,14 @@
 ##### 2.1.1 导航地图的拓扑图
 在我们常用的导航地图中，通过拓扑图(Topological Graph)，用节点代表路口，边代表道路来对道路网络进行描述。它不仅能表示不同道路间的联通关系，通过在边上存储距离、时间等信息，进一步形成权重图（weighted graph），这种图能帮助计算最短路径、分析交通状况，并用于导航系统。构建和优化拓扑图需要处理大量数据，是现代导航和路径规划的核心工具。
 
-![](essays/wander/wander_media/img1.png)![](essays/wander/wander_media/img2.png)
+![](./wander_media/img1.png)![](./wander_media/img2.png)
 
 ##### 2.1.2 基于拓扑图的经典最短路算法——Dijkstra和A*
 传统交通流仿真中，至今仍广泛采用经典的基于图论的算法——Dijkstra算法，以及由Dijkstra算法演化的A*算法（二者还有各种改进类型），来完成一对一的单车路径解算，主要因为仿真对象的OD(起终点)往往各不相同，在拓扑网络中，尽管可以一次性解算所有点对之间的最短路径，但开销同样会指数级上升。因此，在实际仿真前（或是车辆进入路网前），采取一次性或者流式批次的方法完成预解算，仍然是通行的方式。
 
-![](essays/wander/wander_media/DijkstraDemo.gif)
+![](./wander_media/DijkstraDemo.gif)
 
-![Dijkstra算法（图源：wikipedia）](essays/wander/wander_media/A__Search_Example_on_North_American_Freight_Train_Network.gif)
+![Dijkstra算法（图源：wikipedia）](./wander_media/A__Search_Example_on_North_American_Freight_Train_Network.gif)
 
 
 
@@ -56,7 +56,7 @@ Frank-Wolfe算法通过将非线性目标函数在当前解处线性化，将原
 
 
 
-![Frank-Wolfe算法单步示意图](essays/wander/wander_media/img5.png)
+![Frank-Wolfe算法单步示意图](./wander_media/img5.png)
 
 ### 3 基于Tile map的导航网格（Navmesh）与流场寻路「Flow Field Pathfinding」
 #### 3.1 导航网格与流场
@@ -64,16 +64,16 @@ Frank-Wolfe算法通过将非线性目标函数在当前解处线性化，将原
 
 构建流场可以采用Bushfire算法，即从原点开始，对网格前后左右的相邻格子依次进行cost计算，每次+1，被重复计算的格子则取最小值，像野火燎原一样遍历全图。这里搬运我认为非常漂亮的一张图（来自知乎[@沈琰](https://www.zhihu.com/people/4279e43465ffea93a4b4e2db05ee6d38)）
 
-![导航网格的流场](essays/wander/wander_media/img6.webp)
+![导航网格的流场](./wander_media/img6.webp)
 
 #### 3.2 动态势能——最短路径与最优路径的权衡
 Navmesh提供了一个静态的场用于路径求解，这种方式在大多数场景下可能已经满足要求，但当我们考虑这样的情况：在一个人流量很大的L型通道转角，假设所有人都选择最短路，甚至会导致排队或者拥堵，而我们如果选择沿着外侧行走来规避拥挤，反而能更快地通过。这是因为在静态场下，最短路并不会考虑人与人之间可能产生的拥挤或者反应延迟带来的空间占用，因此在模拟典型的大流量疏散场景时容易导致和真实情况不一致，可以参考PTV官方提供的案例（见下图，油管链接：[https://www.youtube.com/watch?v=8SmRBTJ-jeU](https://www.youtube.com/watch?v=8SmRBTJ-jeU)）。
 
-![未考虑动态势能（左）和考虑动态势能（右）](essays/wander/wander_media/img7.png)
+![未考虑动态势能（左）和考虑动态势能（右）](./wander_media/img7.png)
 
 为了解决仿真计算的“最短距离路径”与个体决策的“最短时间路径”不一致的问题，PTV VISWALK中增加了基于动态势能（dynamic potential）的路径解算模式。之所以叫动态势能，是因为它会结合场景下行人对网格空间的占用，通过预测当前实际通过每一个网格的时间来动态地更新整个流场。根据 [Tobias Kretz](https://arxiv.org/abs/1107.2004) 的论文，动态势能计算包含主要三个步骤：首先，计算出一个小区域的预期或估计步行速度图，其中会考虑到障碍物的分布、人员以及可能影响速度的其他属性。第二步：从目的地区域开始，采用数值艾克纳方程（numerical Eikonal equation）求解器对所有地块的行走时间进行数值积分，估计到目标区域的剩余行程时间（这一步解算需要往往消耗非常多资源）。第三步是基于当前的时间场计算所有被行人占用，具有相同目的地的网格的梯度。由于引入动态势能后计算开销极大，会明显影响仿真性能，在VISWALK中，默认10个仿真步才更新一次。
 
-![Viswalk 动态势能计算图示](essays/wander/wander_media/img8.png)
+![Viswalk 动态势能计算图示](./wander_media/img8.png)
 
 **与Viswalk相似，数值艾克纳方程同样被应用在了星际2的寻路优化中**，用于估计单位在不同地形和区域中的的真实行走时间，实现更智能（或者说是自然）的游戏单位寻路行为。尽管星际争霸通过一系列对地图空间的优化降低了需要进行动态行走时间估计的单元数量，在实际仿真过程中仍然无法做到单步更新，因而单位寻路在极少数情况下同样会出现**Bug**。
 
@@ -99,14 +99,14 @@ Navmesh提供了一个静态的场用于路径求解，这种方式在大多数�
 
 在星际争霸2默认256*256的地图中，如果采用常规的网格化方案，大约需要64000个网格，而采用CDT方案只需要2000+三角形。A*算法理想状态下是线性复杂度「O(V+E)」，如果不考虑三角划分的时间（可以提前预处理），采用CDT+A*的方式理论上能实现20倍以上的性能提升。同时由于将数据量缩减到了CPU单靠缓存就能消化的水平（<font style="color:rgb(64, 64, 64);">每个三角形仅用 </font>**<font style="color:rgb(64, 64, 64);">16byte存储邻接关系</font>**<font style="color:rgb(64, 64, 64);">，而每个顶点只需4byte用于索引</font>），不需要使用动态内存（DRAM），IO消耗的大幅减少使得计算延迟得到了进一步改善。
 
-![](essays/wander/wander_media/img9.jpg)
+![](./wander_media/img9.jpg)
 
 <font style="color:rgb(102, 102, 102);">StarCraft 2 Navmesh （基于CDT）</font>
 
 ##### 3.3.3 漏斗算法
 漏斗算法（Funnel Algorithm）是一种经典的几何寻路算法，在游戏AI寻路、网格寻路、机器人路径规划等领域都有广泛应用。漏斗算法可以实现极致简约、快速并且精准的寻路。关于漏斗算法的介绍可以参考下图的文章（标题超链）。或者这篇：[图解NavMesh寻路中的漏斗算法](https://www.cnblogs.com/pointer-smq/p/11332897.html)
 
-![](essays/wander/wander_media/img10.gif)
+![](./wander_media/img10.gif)
 
 [The Funnel Algorithm ](https://medium.com/@reza.teshnizi/the-funnel-algorithm-explained-visually-41e374172d2d)
 
