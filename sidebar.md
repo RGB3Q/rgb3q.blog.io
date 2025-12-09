@@ -2,6 +2,10 @@
 
 * [首页](/)
 * [个人简介](/guide)
+
+* LLM
+  * [在语义的弯曲空间中导航：大语言模型、流形与Prompt工程](essays/LLM/LLM&Manifolds.md)
+
 * ABM
   * [Matsim是如何仿真的](essays/matsim/howMATSimWorks.md)
   * [仿真效率魔咒：不可能三角（观PSIM有感）](essays/matsim/psim.md)
