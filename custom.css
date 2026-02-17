@@ -1,7 +1,17 @@
 /* custom.css */
 .markdown-body {
-  max-width: 200px; /* Adjust the value as needed */
-  margin: 10px; /* Center the content horizontally */
+  max-width: 800px; /* 更合理的内容宽度 */
+  margin: 0 auto; /* 正确居中内容 */
+  padding: 20px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .markdown-body {
+    max-width: 100%;
+    padding: 15px;
+    margin: 0;
+  }
 }
 
 
