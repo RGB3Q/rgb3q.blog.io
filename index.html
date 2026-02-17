@@ -111,40 +111,40 @@
             return html + footer;
           });
           
-          // 添加评论系统
-          hook.doneEach(function() {
-            // 只在非首页和非封面页显示评论
-            if (vm.route.path !== '/' && !vm.route.path.includes('cover')) {
-              var commentsContainer = document.getElementById('comments-container');
-              if (!commentsContainer) {
-                var section = document.createElement('section');
-                section.id = 'comments-container';
-                section.style.marginTop = '2rem';
-                section.style.paddingTop = '1rem';
-                section.style.borderTop = '1px solid #eee';
-                
-                // Giscus评论系统配置
-                var giscusScript = document.createElement('script');
-                giscusScript.src = 'https://giscus.app/client.js';
-                giscusScript.setAttribute('data-repo', 'RGB3Q/blog');
-                giscusScript.setAttribute('data-repo-id', 'R_kgDOLktxkA');
-                giscusScript.setAttribute('data-category', 'Comments');
-                giscusScript.setAttribute('data-category-id', 'DIC_kwDOLktxkM4C2mdD');
-                giscusScript.setAttribute('data-mapping', 'pathname');
-                giscusScript.setAttribute('data-strict', '0');
-                giscusScript.setAttribute('data-reactions-enabled', '1');
-                giscusScript.setAttribute('data-emit-metadata', '0');
-                giscusScript.setAttribute('data-input-position', 'bottom');
-                giscusScript.setAttribute('data-theme', 'light');
-                giscusScript.setAttribute('data-lang', 'zh-CN');
-                giscusScript.setAttribute('crossorigin', 'anonymous');
-                giscusScript.async = true;
-                
-                section.appendChild(giscusScript);
-                document.querySelector('.markdown-section').appendChild(section);
-              }
-            }
-          });
+          // 添加评论系统（暂时禁用，需要配置Giscus）
+          // hook.doneEach(function() {
+          //   // 只在非首页和非封面页显示评论
+          //   if (vm.route.path !== '/' && !vm.route.path.includes('cover')) {
+          //     var commentsContainer = document.getElementById('comments-container');
+          //     if (!commentsContainer) {
+          //       var section = document.createElement('section');
+          //       section.id = 'comments-container';
+          //       section.style.marginTop = '2rem';
+          //       section.style.paddingTop = '1rem';
+          //       section.style.borderTop = '1px solid #eee';
+          //       
+          //       // Giscus评论系统配置
+          //       var giscusScript = document.createElement('script');
+          //       giscusScript.src = 'https://giscus.app/client.js';
+          //       giscusScript.setAttribute('data-repo', 'RGB3Q/blog');
+          //       giscusScript.setAttribute('data-repo-id', 'R_kgDOLktxkA');
+          //       giscusScript.setAttribute('data-category', 'Comments');
+          //       giscusScript.setAttribute('data-category-id', 'DIC_kwDOLktxkM4C2mdD');
+          //       giscusScript.setAttribute('data-mapping', 'pathname');
+          //       giscusScript.setAttribute('data-strict', '0');
+          //       giscusScript.setAttribute('data-reactions-enabled', '1');
+          //       giscusScript.setAttribute('data-emit-metadata', '0');
+          //       giscusScript.setAttribute('data-input-position', 'bottom');
+          //       giscusScript.setAttribute('data-theme', 'light');
+          //       giscusScript.setAttribute('data-lang', 'zh-CN');
+          //       giscusScript.setAttribute('crossorigin', 'anonymous');
+          //       giscusScript.async = true;
+          //       
+          //       section.appendChild(giscusScript);
+          //       document.querySelector('.markdown-section').appendChild(section);
+          //     }
+          //   }
+          // });
         }
       ]
     }
